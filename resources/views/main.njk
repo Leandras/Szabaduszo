@@ -1,0 +1,54 @@
+
+
+{% extends 'master' %}
+
+{% block title %}Kezdőlap{% endblock %}
+{% block content %}
+<table class="table table-hover" id="table" style="width:100%;" >
+    <tr >
+        <th >Név</th>
+        <th >Leírás</th>
+        <th >Kategória</th>
+        <th >Város</th>
+        <th >Fizetés</th>
+        <th >Feladó</th>
+        <th></th>
+        <th>Opciók</th>
+        <th></th>
+    </tr>
+{% for job in jobs %}
+    <tr id="{{job.id}}">
+        <td >{{job.name}}</td>
+        <td >{{job.description}}</td>
+        <td >{{job.categoryName}}</td>
+        <td >{{ job.CityName}}</td>
+        <td >{{job.payment}}</td>
+        <td >{{job.UserName}}</td>
+        {% if job.UserName == currentUser.nickname %}
+        <td><a class="btn btn-primary btn-sm" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
+        {% else %}
+        <td><a class="btn btn-primary btn-sm disabled" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
+        {% endif %}
+        {% if job.taken or currentUser.isEmployer or currentUser == null %}
+        <td><a  class="btn btn-success btn-sm disabled">Elfogad</a></td>
+        {% else %}
+        <td><a href="{{ 'job_take' | route ({ id: job.id }) }}" class="btn btn-success btn-sm ">Elfogad</a></td>
+        {% endif %}
+        {% if job.UserName == currentUser.nickname %}
+            <td><a href="{{ 'job_delete' | route ({ id: job.id }) }}" class="btn btn-danger btn-sm">Töröl</a></td>
+        {% else %}
+             <td><a class="btn btn-danger btn-sm disabled">Töröl</a></td>
+        {% endif %}
+    </tr>
+{% endfor %}
+</table>
+
+
+<script>
+
+    function openEdit(e){
+        console.log("asd: " + e + "     asdasd: " );
+        $('#modalWindow').modal();
+    }
+</script>
+{% endblock %} 

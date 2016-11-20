@@ -1,0 +1,29 @@
+<!--
+{% extends 'master' %}
+
+{% block title %}Kezdőlap{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs">
+{% for categoryBatch in categories | batch(3) %}
+    
+        {% for category in categoryBatch %}
+            <li id="{{ category.name }}"><a onclick="changePanel(this.id)">{{ category.name }}</a></li>
+        {% endfor %}
+  
+{% endfor %}
+ </ul>
+<div class="row">
+     <div class="col-md-2">Név</div>
+      <div class="col-md-2">Leírás</div>
+      <div class="col-md-2">Fizetés</div>
+      <div class="col-md-2">Feltöltés dátuma</div>
+      <div class="col-md-2">Feladó</div>
+</div>
+<div id="table">
+    {% for job in category.latestJobs %}
+        <a href="{{ 'job_page' | route({id: job.id}) }}" class="list-group-item">{{ job.name }}</a>
+    {% endfor %}
+</div>
+  {% endblock %} 
+-->

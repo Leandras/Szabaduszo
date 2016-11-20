@@ -1,0 +1,23 @@
+{% extends 'master' %}
+
+{% block title %}{{ job.name }}{% endblock %}
+{% block content %}
+    <h1>{{ job.name }}</h1>
+    <p><a href="{{ 'job_list' | route }}?category={{ job.category.id }}?city={{ job.city.id }}">{{ job.category.name }}</a> · beküldte <em> {{ job.created_by.nickname }}</em> </p>
+    <h2>Leírás</h2>
+    <pre>{{ job.description }}</pre>
+    <h2>Fizetés</h2>
+    <p>{{ job.payment }}</p>
+    <div>
+        <a
+            class="btn btn-primary"
+            href="{{ 'job_edit' | route ({ id: job.id }) }}">
+            Szerkesztés
+        </a>
+        <a
+            class="btn btn-warning"
+            href="{{ job_delete | route ({ id: job.id })}}">
+            Törlés
+        </a>
+    </div>
+    {% endblock %}
