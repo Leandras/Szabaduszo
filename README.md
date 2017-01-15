@@ -165,6 +165,6 @@
 
     3. Szekvenciális Diagramm a város szűréshez
 
-![Szekvenciális diagramm](Models/SequenceDiagrams.png)
+![Szekvenciális diagramm](Models/SequenceDiagrams.PNG)
 
     
