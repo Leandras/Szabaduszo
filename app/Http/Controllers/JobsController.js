@@ -6,18 +6,54 @@ const City = use ('App/Model/City')
 const User = use ('App/Model/User') 
 const Validator = use('Validator')
 const Helpers = use('Helpers')
-
+var currentCity = "Összes";
+var currentCategory = "Összes";
+var currentCatId = 1;
+var currentCityId = 1;
 
 
 class JobsController {
- * main (request, response) {
- 
-    const jobs = yield Job.all()
+ * main (request, response){
+    
+
     const categories = yield Category.all()
     const cities = yield City.all()
     const users = yield User.all()
+
+    const jobs = yield Job.query()
+        .where(function(){
+            if(currentCatId != 0) this.where('category_id', currentCatId)
+            if(currentCityId != 0) this.where('city_id', currentCityId)
+        })
+        //.with('job.user_id')
+        .fetch()
+
+        for (let job of jobs){
+            const catName = yield Category.find(job.category_id)
+            const cityName = yield City.find(job.city_id)
+            const userName = yield User.find(job.user_id)
+            job.categoryName = catName.name;
+            job.CityName = cityName.name;
+            job.UserName = userName.nickname;
+            job.categoryNumber = catName.numberOfJobs;
+            job.cityNumber = cityName.numberOfJobs;
+        }
+
+    yield response.sendView('main', {jobs: jobs.toJSON(), cities: cities.toJSON(), categories: categories.toJSON(), currentCity, currentCategory})
     
-    for (let job of jobs){
+  }
+
+  * ajaxCategoryFilter (request, response){
+      currentCatId = request.param('choosenCategory')
+      if(currentCatId == 0 || currentCatId == null){
+          currentCatId = 0;
+          currentCategory = "Összes";
+      }else{
+        const cat = yield Category.find(currentCatId);
+        currentCategory = cat.name;
+    }
+    const jobs = yield Job.all()
+     for (let job of jobs){
         const catName = yield Category.find(job.category_id)
         const cityName = yield City.find(job.city_id)
         const userName = yield User.find(job.user_id)
@@ -25,13 +61,21 @@ class JobsController {
         job.CityName = cityName.name;
         job.UserName = userName.nickname;
     }
-    
-    //console.log("Nevek: " +  job.categoryName)
-    
-    yield response.sendView('main', {jobs: jobs.toJSON(), cities, categories})
 
-   
-    
+      yield response.sendView('main', {jobs: jobs.toJSON().filter(job => job.category_id == currentCatId) ,currentCategory });
+  }
+
+   * ajaxCityFilter (request, response){
+      currentCityId = request.param('choosenCity')
+      if(currentCityId == 0 || currentCityId == null){
+          currentCityId = 0;
+          currentCity = "Összes";
+      }else{
+        const cat = yield City.find(currentCityId);
+        currentCity = cat.name;
+    }
+
+      yield response.sendView('main', { currentCity });
   }
 
   /**
@@ -175,7 +219,6 @@ class JobsController {
   }
 
    * doDelete (request, response) {
-
     const jobId = request.param('id');
     const job = yield Job.find(jobId);
     const cat = yield Category.find(job.category_id)

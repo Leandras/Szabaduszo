@@ -18,7 +18,7 @@
 const Route = use('Route')
 
 Route.get('/', 'JobsController.main').as('main')
-Route.get('/job', 'JobsController.index').as('job_list')
+Route.get('/job/', 'JobsController.index').as('index')
 Route.get('/job/create', 'JobsController.create').as('job_create')
 Route.post('/job/create', 'JobsController.doCreate').as('do_job_create')
 Route.post('/job/:id/edit', 'JobsController.doEdit').as('do_job_edit')
@@ -31,4 +31,12 @@ Route.post('/login', 'UserController.doLogin').as('do_login')
 Route.get('/register', 'UserController.register').as('register')
 Route.post('/register', 'UserController.doRegister').as('do_register')
 Route.get('/logout', 'UserController.doLogout').as('do_logout').middleware('auth')
+
+Route.group('ajax', function () {
+  Route.get('/job/:id/delete', 'JobsController.doDelete')
+  Route.get('/ajaxCategoryFilter/:choosenCategory?', 'JobsController.ajaxCategoryFilter')
+  Route.get('/ajaxCityFilter/:choosenCity?', 'JobsController.ajaxCityFilter')
+  Route.get('/job/:id/take', 'JobsController.doTake')
+}).prefix('/ajax')
+
 

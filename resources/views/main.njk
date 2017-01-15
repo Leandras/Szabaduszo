@@ -1,9 +1,43 @@
-
-
 {% extends 'master' %}
 
 {% block title %}Kezdőlap{% endblock %}
+
+{% block scripts %}
+       <script src="/js/main.js"></script>
+    {% endblock %}
+
 {% block content %}
+{{ csrfField }}
+<table>
+          <tr>
+              <td>
+                  <div name="cityDropDown" class="dropdown">
+                      <button id="citySelectionButton" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{currentCity}}<span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                          <li id="0" onclick="selectCity(this.id);"><a>Összes</a></li>
+                          <li class="divider"></li>
+                          {% for city in cities %}
+                              <li id="{{ city.id }}" onclick="selectCity(this.id);"><a>{{city.name}}</a></li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </td>
+              <td>
+                  <div name="categoryDropDown" class="dropdown">
+                      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{currentCategory}}<span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                          <li id="0" onclick="selectCategory(this.id);"><a>Összes</a></li>
+                          <li class="divider"></li>
+                          {% for category in categories %}
+                              <li id="{{ category.id }}" onclick="selectCategory(this.id)"><a>{{category.name}}</a></li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </td>
+          </tr>
+      </table>
+
+<div id="mainTable" >
 <table class="table table-hover" id="table" style="width:100%;" >
     <tr >
         <th >Név</th>
@@ -20,29 +54,49 @@
     <tr id="{{job.id}}">
         <td >{{job.name}}</td>
         <td >{{job.description}}</td>
-        <td >{{job.categoryName}}</td>
-        <td >{{ job.CityName}}</td>
+        <td id="{{ job.categoryNumber }}" onclick="getCategoryStats(this.id)">{{job.categoryName}}</td>
+        <td id="{{ job.cityNumber }}" onclick="getCityStats(this.id)" >{{job.CityName}}</td>
         <td >{{job.payment}}</td>
         <td >{{job.UserName}}</td>
         {% if job.UserName == currentUser.nickname %}
-        <td><a class="btn btn-primary btn-sm" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
+            <td><a class="btn btn-primary btn-sm" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
         {% else %}
-        <td><a class="btn btn-primary btn-sm disabled" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
+            <td><a class="btn btn-primary btn-sm disabled" href="{{ 'job_edit' | route({ id: job.id }) }}">Szerkesztés</a></td>
         {% endif %}
         {% if job.taken or currentUser.isEmployer or currentUser == null %}
-        <td><a  class="btn btn-success btn-sm disabled">Elfogad</a></td>
+            <td><a  class="btn btn-success btn-sm disabled">Elfogad</a></td>
         {% else %}
-        <td><a href="{{ 'job_take' | route ({ id: job.id }) }}" class="btn btn-success btn-sm ">Elfogad</a></td>
+            {% if job.taken %}
+            <!--<td><a href="{{ 'job_take' | route ({ id: job.id }) }}" class="btn btn-success btn-sm ">Elfogad</a></td>-->
+                <td ><button id="{{ job.id }}" class="btn btn-success btn-sm disabled" onclick="acceptJob(this.id)">Elfogad</button></td>
+            {% else %}
+                <td ><button id="{{ job.id }}" class="btn btn-success btn-sm" onclick="acceptJob(this.id)">Elfogad</button></td>
+            {% endif %}
         {% endif %}
         {% if job.UserName == currentUser.nickname %}
-            <td><a href="{{ 'job_delete' | route ({ id: job.id }) }}" class="btn btn-danger btn-sm">Töröl</a></td>
+            <td ><button id="{{ job.id }}" class="btn btn-danger btn-sm" onclick="deleteJob(this.id)">Töröl</button></td>
+            <!--<td><a href="{{ 'job_delete' | route ({ id: job.id }) }}" class="btn btn-danger btn-sm">Töröl</a></td>-->
         {% else %}
              <td><a class="btn btn-danger btn-sm disabled">Töröl</a></td>
         {% endif %}
     </tr>
+
+    <div id="confirmModal" class="modal fade confirm-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          Biztosan törölni szeretnéd?
+        </div>
+        <div class="modal-footer">
+          <button id="okButton" type="button" class="btn btn-success modal-ok" data-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-danger modal-cancel" data-dismiss="modal">Mégse</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endfor %}
 </table>
-
+</div>
 
 <script>
 

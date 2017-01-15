@@ -127,3 +127,44 @@
     ii. Állapot diagramm:
 ![Munka állapot diagramm](Models/munka_allapot.png)
 
+##### 4. Javascript, 2. Beadandó
+
+    1. Folyamatok
+
+        i. Munka elfogadása: A munka elfogadását csak alkalmazotti státuszú felhasználó teheti meg. Az elfogad gombra kattintva egy Ajax hívást intézünk a "/job/:id/take" route-ra, amely
+        a controller "doTake" funkcióját futtatja le és regisztrálja a munkaválallót a munkához. Ezután frissíti a táblázatot.
+
+        ii. Munka törlése: A munka törlését csak munkaadó és azon belül is csak az teheti meg, aki a munkát létrehozta. Az elfogadáshoz hasonlóan itt is egy ajax hívás történik a "/job/:id/delete"
+        route-re, ami a controller "doDelete" funkcióját hívja meg, majd frissíi a táblázatot.
+
+        iii. A táblázat felett elhelyezett bal oldali gomb segítségével választani tudunk, melyik városokból szeretnénk a munkákat látni. Ehhez egy ajax hívást végzünk, az "/ajaxCategoryFilter/:choosenCategory?'"-ra
+        amely paraméterül az adott város id-jét kapja és állít be egy globális filtert a városokra, amely aztán a táblázat elkészítéséhez felelős "main" függvényen keresztül, kiválasztja azon
+        munkákat melyek az adott városokba tartoznak. Az "Összes" opcióval visszatérhetünk az alapállapotra, és az összes város munkáit láthatjuk.
+
+        iv. A táblázat felett elhelyezett jobb oldali gomb segítségével választani tudunk, melyik kategóriából szeretnénk a munkákat látni. Ez is, mint a város filterelése egy saját "'/ajaxCityFilter/:choosenCity?'"
+        route-on keresztül végzi az ajax hívást, állít be egy globális változót és frissíti a "main" függyvényben lekért munkákat az alapján, milyen filtert állítottunk be. A két szűrés egyszerre is
+        működik, így ki tudunk választani várost és kategóriát egyszerre.
+
+        v. Az egyes munkáknál elhelyezz kategória típusokra kattintva egy statisztikát kaphatunk felugró ablakba, hogy hány munka van meghirdetve az adott kategóriában összsen.
+
+        vi. A munkák város tulajdonságánál pedig a munkákra kaphatunk egy hasonló statisztikát.
+
+    2. Fájlok és módosítások
+
+        i. A javascript funkciók a public/js/main.js fájlban találhatók
+            -selectCity() --> a város szűrése
+            -selectCategory() --> a kategória szűrése
+            -deleteJob() --> munka törlése
+            -acceptJob() --> munka elfoadása
+            -getCategoryStats() --> kategória statisztikák kiiratása
+            -getCityStats() --> város statisztikák kiiratása
+
+        ii. A route-ok az app/Http/route.js fájlban lettek regisztrálva
+
+        iii. Az "ajaxCategoryFilter" és "ajaxCityFilter" funkciók a JobsControllerbe találhatók
+
+    3. Szekvenciális Diagramm a város szűréshez
+
+![Szekvenciális diagramm](Models/SequenceDiagrams.png)
+
+    

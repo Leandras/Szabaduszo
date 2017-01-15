@@ -7,8 +7,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{% block title %}{% endblock %} - Szabadúszó</title>
+    
+
     <link rel="icon" href="favicon.png" type="image/x-icon">
-    <!--<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" rel="stylesheet" integrity="sha384-G3G7OsJCbOk1USkOY4RfeX1z27YaWrZ1YuaQ5tbuawed9IoreRDpWpTkZLXQfPm3" crossorigin="anonymous">-->
     <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/slate/bootstrap.min.css" rel="stylesheet" integrity="sha384-RpX8okQqCyUNG7PlOYNybyJXYTtGQH+7rIKiVvg1DLg6jahLEk47VvpUyS+E2/uJ" crossorigin="anonymous">
     <link href="/style.css" rel="stylesheet">
   </head>
@@ -24,11 +25,11 @@
           </button>
           <a class="navbar-brand" href="{{ 'main' | route }}">Munkák</a>
         </div>
+       
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
           {% if currentUser %}
           {% if currentUser.isEmployer %}
-            
             <li><a href="{{ 'job_create' | route }}">Munka beküldése</a></li>
           {% endif %}
           {% endif %}
@@ -48,11 +49,14 @@
     </nav>
     <div class="app-container">
       <div class="container">
-        {% block content %}{% endblock %}
+         {% block content %}
+        
+         
+         {% endblock %}
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
+  {% block scripts %} <script src="/js/master.js"></script>{% endblock %}
   </body>
 </html>

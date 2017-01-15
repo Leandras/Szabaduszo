@@ -14,6 +14,9 @@ class Job extends Lucid {
   city(){
     return this.belongsTo('App/Model/City')
   }
+  user(){
+    return this.belongsTo('App/Model/User')
+  }
 }
 
 module.exports = Job
